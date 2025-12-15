@@ -74,7 +74,8 @@
     "rector": "rector process",
     "phpstan": "phpstan analyse --memory-limit=-1",
     "format": "php-cs-fixer fix",
-    "depcheck": "composer-unused"
+    "depcheck": "composer-unused",
+    "dev": "@php artisan serve"
   },
   "config": {
     "platform": {
