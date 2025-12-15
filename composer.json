@@ -75,7 +75,7 @@
     "phpstan": "phpstan analyse --memory-limit=-1",
     "format": "php-cs-fixer fix",
     "depcheck": "composer-unused",
-    "dev": "@php artisan serve"
+    "dev": "@php artisan serve --host=localhost --port=${SERVER_PORT:-3000}"
   },
   "config": {
     "platform": {

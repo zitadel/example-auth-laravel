@@ -34,7 +34,7 @@ class SocialiteServiceProvider extends ServiceProvider
                 $app['request'],
                 $config['client_id'],
                 $config['client_secret'],
-                $config['callback_url']
+                route('auth.callback', ['provider' => 'zitadel'], true)
             );
         });
     }
