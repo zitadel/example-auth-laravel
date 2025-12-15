@@ -35,10 +35,10 @@ class ZitadelProvider extends AbstractProvider implements ProviderInterface
      * Configures the provider to use PKCE and sets ZITADEL-specific defaults.
      *
      * @param Request $request
-     * @param  string  $clientId
-     * @param  string  $clientSecret
-     * @param  string  $redirectUrl
-     * @param  array<string, mixed>  $guzzle
+     * @param string $clientId
+     * @param string $clientSecret
+     * @param string $redirectUrl
+     * @param array<string, mixed> $guzzle
      * @return void
      */
     public function __construct(
@@ -50,79 +50,10 @@ class ZitadelProvider extends AbstractProvider implements ProviderInterface
     ) {
         parent::__construct($request, $clientId, $clientSecret, $redirectUrl, $guzzle);
 
-        $this->domain = rtrim((string) config('zitadel.domain'), '/');
+        $this->domain = rtrim((string)config('zitadel.domain'), '/');
         $this->scopeSeparator = ' ';
         $this->usesPKCE = true;
         $this->scopes = config('zitadel.scopes', []);
-    }
-
-    /**
-     * Get the authentication URL for the provider.
-     *
-     * @param  string  $state
-     * @return string
-     */
-    #[Override]
-    protected function getAuthUrl($state): string
-    {
-        return $this->buildAuthUrlFromBase(
-            "$this->domain/oauth/v2/authorize",
-            $state
-        );
-    }
-
-    /**
-     * Get the token URL for the provider.
-     *
-     * @return string
-     */
-    #[Override]
-    protected function getTokenUrl(): string
-    {
-        return "$this->domain/oauth/v2/token";
-    }
-
-    /**
-     * Get the raw user for the given access token.
-     *
-     * Calls the OIDC UserInfo endpoint to retrieve user profile data.
-     *
-     * @param string $token
-     * @return array<string, mixed>
-     * @throws GuzzleException
-     */
-    #[Override]
-    protected function getUserByToken($token): array
-    {
-        $response = $this->getHttpClient()->get(
-            "$this->domain/oidc/v1/userinfo",
-            [
-                'headers' => [
-                    'Authorization' => "Bearer $token",
-                ],
-            ]
-        );
-
-        return json_decode((string) $response->getBody(), true);
-    }
-
-    /**
-     * Map the raw user array to a Socialite User instance.
-     *
-     * Maps standard OIDC claims (sub, name, picture) to Socialite properties.
-     *
-     * @param  array<string, mixed>  $user
-     * @return User
-     */
-    #[Override]
-    protected function mapUserToObject(array $user): User
-    {
-        return (new User())->setRaw($user)->map([
-            'id'     => $user['sub'] ?? null,
-            'name'   => $user['name'] ?? null,
-            'email'  => $user['email'] ?? null,
-            'avatar' => $user['picture'] ?? null,
-        ]);
     }
 
     /**
@@ -141,8 +72,8 @@ class ZitadelProvider extends AbstractProvider implements ProviderInterface
     public function getAccessTokenResponse($code): array
     {
         $fields = [
-            'grant_type'   => 'authorization_code',
-            'code'         => $code,
+            'grant_type' => 'authorization_code',
+            'code' => $code,
             'redirect_uri' => $this->redirectUrl,
             'code_verifier' => $this->request->session()->pull('code_verifier'),
         ];
@@ -152,12 +83,23 @@ class ZitadelProvider extends AbstractProvider implements ProviderInterface
                 'Authorization' => 'Basic ' . base64_encode(
                     $this->clientId . ':' . $this->clientSecret
                 ),
-                'Content-Type'  => 'application/x-www-form-urlencoded',
+                'Content-Type' => 'application/x-www-form-urlencoded',
             ],
             'body' => http_build_query($fields),
         ]);
 
-        return json_decode((string) $response->getBody(), true);
+        return json_decode((string)$response->getBody(), true);
+    }
+
+    /**
+     * Get the token URL for the provider.
+     *
+     * @return string
+     */
+    #[Override]
+    protected function getTokenUrl(): string
+    {
+        return "$this->domain/oauth/v2/token";
     }
 
     /**
@@ -182,14 +124,72 @@ class ZitadelProvider extends AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Get the authentication URL for the provider.
+     *
+     * @param string $state
+     * @return string
+     */
+    #[Override]
+    protected function getAuthUrl($state): string
+    {
+        return $this->buildAuthUrlFromBase(
+            "$this->domain/oauth/v2/authorize",
+            $state
+        );
+    }
+
+    /**
+     * Get the raw user for the given access token.
+     *
+     * Calls the OIDC UserInfo endpoint to retrieve user profile data.
+     *
+     * @param string $token
+     * @return array<string, mixed>
+     * @throws GuzzleException
+     */
+    #[Override]
+    protected function getUserByToken($token): array
+    {
+        $response = $this->getHttpClient()->get(
+            "$this->domain/oidc/v1/userinfo",
+            [
+                'headers' => [
+                    'Authorization' => "Bearer $token",
+                ],
+            ]
+        );
+
+        return json_decode((string)$response->getBody(), true);
+    }
+
+    /**
+     * Map the raw user array to a Socialite User instance.
+     *
+     * Maps standard OIDC claims (sub, name, picture) to Socialite properties.
+     *
+     * @param array<string, mixed> $user
+     * @return User
+     */
+    #[Override]
+    protected function mapUserToObject(array $user): User
+    {
+        return (new User())->setRaw($user)->map([
+            'id' => $user['sub'] ?? null,
+            'name' => $user['name'] ?? null,
+            'email' => $user['email'] ?? null,
+            'avatar' => $user['picture'] ?? null,
+        ]);
+    }
+
+    /**
      * Create a user instance from the given data.
      *
      * OVERRIDE: Attaches the raw token response (containing id_token) to the
      * user object. This allows the controller to access the ID Token via
      * the accessTokenResponseBody property.
      *
-     * @param  array<string, mixed>  $response
-     * @param  array<string, mixed>  $user
+     * @param array<string, mixed> $response
+     * @param array<string, mixed> $user
      * @return User
      * @noinspection PhpDynamicFieldDeclarationInspection
      */

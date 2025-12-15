@@ -1,15 +1,25 @@
 {
   "name": "zitadel/laravel-pkce-example",
   "type": "project",
-  "description": "Laravel PKCE Authentication Example with ZITADEL",
+  "description": "Laravel application demonstrating ZITADEL authentication with PKCE using Socialite",
   "keywords": [
     "laravel",
     "zitadel",
+    "authentication",
+    "oauth2",
+    "oidc",
     "pkce",
-    "oauth",
-    "oidc"
+    "socialite",
+    "sso"
   ],
+  "homepage": "https://github.com/zitadel/example-laravel-auth",
   "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Zitadel",
+      "homepage": "https://zitadel.com"
+    }
+  ],
   "require": {
     "php": "^8.3",
     "guzzlehttp/guzzle": "^7.9",
@@ -26,7 +36,8 @@
     "nunomaduro/collision": "^8.0",
     "phpstan/phpstan": "^1.12",
     "phpunit/phpunit": "^11.0",
-    "rector/rector": "^1.2"
+    "rector/rector": "^1.2",
+    "icanhazstring/composer-unused": "^0.9.3"
   },
   "autoload": {
     "psr-4": {

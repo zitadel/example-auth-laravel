@@ -10,6 +10,6 @@
     <link rel="icon" href="{{ asset('static/app-logo.svg') }}" type="image/svg+xml">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
-    @yield('content')
+@yield('content')
 </body>
 </html>

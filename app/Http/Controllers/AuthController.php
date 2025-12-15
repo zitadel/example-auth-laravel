@@ -33,7 +33,7 @@ class AuthController extends Controller
      * @param MessageService $messageService
      */
     public function __construct(
-        private readonly AuthService $authService,
+        private readonly AuthService    $authService,
         private readonly MessageService $messageService
     ) {
     }
@@ -100,7 +100,7 @@ class AuthController extends Controller
                 'refresh_token' => $socialiteUser->refreshToken,
                 'id_token' => $tokenResponse['id_token'],
                 'expires_at' => isset($tokenResponse['expires_in'])
-                    ? time() + (int) $tokenResponse['expires_in']
+                    ? time() + (int)$tokenResponse['expires_in']
                     : time() + 3600,
             ]);
 

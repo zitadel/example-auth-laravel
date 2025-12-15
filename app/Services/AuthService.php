@@ -43,7 +43,7 @@ class AuthService
                 'access_token' => $data['access_token'] ?? null,
                 'refresh_token' => $data['refresh_token'] ?? $refreshToken,
                 'expires_at' => isset($data['expires_in'])
-                    ? time() + (int) $data['expires_in']
+                    ? time() + (int)$data['expires_in']
                     : time() + 3600,
             ];
         } catch (Exception) {

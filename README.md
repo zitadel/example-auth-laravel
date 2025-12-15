@@ -1,14 +1,20 @@
 # Laravel with ZITADEL
 
-Laravel is a web application framework with expressive, elegant syntax. This guide demonstrates how to use Laravel Socialite with a custom ZITADEL provider to implement secure login with ZITADEL.
+Laravel is a web application framework with expressive, elegant syntax. This guide demonstrates how to use Laravel
+Socialite with a custom ZITADEL provider to implement secure login with ZITADEL.
 
-We'll be using the **OpenID Connect (OIDC)** protocol with the **Authorization Code Flow + PKCE**. This is the industry-best practice for security, ensuring that the login process is safe from start to finish.
+We'll be using the **OpenID Connect (OIDC)** protocol with the **Authorization Code Flow + PKCE**. This is the
+industry-best practice for security, ensuring that the login process is safe from start to finish.
 
 ## Example Application
 
-The example repository includes a complete Laravel application, ready to run, that demonstrates how to integrate ZITADEL for user authentication.
+The example repository includes a complete Laravel application, ready to run, that demonstrates how to integrate ZITADEL
+for user authentication.
 
-This example application showcases a typical web app authentication pattern: users start on a public landing page, click a login button to authenticate with ZITADEL, and are then redirected to a protected profile page displaying their user information. The app also includes secure logout functionality that clears the session and redirects users back to ZITADEL's logout endpoint.
+This example application showcases a typical web app authentication pattern: users start on a public landing page, click
+a login button to authenticate with ZITADEL, and are then redirected to a protected profile page displaying their user
+information. The app also includes secure logout functionality that clears the session and redirects users back to
+ZITADEL's logout endpoint.
 
 ### Prerequisites
 
@@ -21,7 +27,8 @@ Before you begin, ensure you have the following:
 
 #### Account Setup
 
-You'll need a ZITADEL account and application configured. Follow the ZITADEL documentation on creating applications to set up your account and create a Web application with Authorization Code + PKCE flow.
+You'll need a ZITADEL account and application configured. Follow the ZITADEL documentation on creating applications to
+set up your account and create a Web application with Authorization Code + PKCE flow.
 
 > **Important:** Configure the following URLs in your ZITADEL application settings:
 >
@@ -32,7 +39,8 @@ You'll need a ZITADEL account and application configured. Follow the ZITADEL doc
 
 ### Configuration
 
-To run the application, you first need to copy the `.env.example` file to a new file named `.env` and fill in your ZITADEL application credentials.
+To run the application, you first need to copy the `.env.example` file to a new file named `.env` and fill in your
+ZITADEL application credentials.
 
 ```bash
 cp .env.example .env
@@ -94,23 +102,28 @@ The application will now be running at `http://localhost:8000`.
 
 ### PKCE Authentication Flow
 
-The application implements the secure Authorization Code Flow with PKCE (Proof Key for Code Exchange), which is the recommended approach for modern web applications.
+The application implements the secure Authorization Code Flow with PKCE (Proof Key for Code Exchange), which is the
+recommended approach for modern web applications.
 
 ### Session Management
 
-Built-in session management with Laravel handles user authentication state across your application, with automatic token refresh and secure session storage.
+Built-in session management with Laravel handles user authentication state across your application, with automatic token
+refresh and secure session storage.
 
 ### Route Protection
 
-Protected routes automatically redirect unauthenticated users to the login flow via the `RequireAuth` middleware, ensuring sensitive areas of your application remain secure.
+Protected routes automatically redirect unauthenticated users to the login flow via the `RequireAuth` middleware,
+ensuring sensitive areas of your application remain secure.
 
 ### Logout Flow
 
-Complete logout implementation that properly terminates both the local session and the ZITADEL session, with proper redirect handling and CSRF protection.
+Complete logout implementation that properly terminates both the local session and the ZITADEL session, with proper
+redirect handling and CSRF protection.
 
 ### Automatic Token Refresh
 
-The middleware automatically detects expired access tokens and refreshes them using the refresh token, maintaining seamless user sessions without re-authentication.
+The middleware automatically detects expired access tokens and refreshes them using the refresh token, maintaining
+seamless user sessions without re-authentication.
 
 ## Resources
 
