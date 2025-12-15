@@ -4,6 +4,8 @@ namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Override;
+use Random\RandomException;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -11,7 +13,7 @@ abstract class TestCase extends BaseTestCase
      * Boot the application.
      * Implements the logic normally found in the missing CreatesApplication trait.
      */
-    #[\Override]
+    #[Override]
     public function createApplication()
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
@@ -23,10 +25,13 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Set up the test environment.
+     * @throws RandomException
      */
-    #[\Override]
+    #[Override]
     protected function setUp(): void
     {
+        putenv('APP_KEY=base64:' . base64_encode(random_bytes(32)));
+
         putenv("PORT=3000");
         putenv("SESSION_DURATION=3600");
         putenv("SESSION_SECRET=test-secret-key-for-pytest");

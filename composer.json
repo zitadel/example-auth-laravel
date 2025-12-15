@@ -70,7 +70,7 @@
     "post-create-project-cmd": [
       "@php artisan key:generate --ansi"
     ],
-    "test": "phpunit --coverage-html=build/coverage/html --coverage-clover=build/coverage/clover.xml",
+    "test": "@php artisan test --coverage-html=build/coverage/html --coverage-clover=build/coverage/clover.xml",
     "rector": "rector process",
     "phpstan": "phpstan analyse --memory-limit=-1",
     "format": "php-cs-fixer fix",
