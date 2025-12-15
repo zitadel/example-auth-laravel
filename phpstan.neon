@@ -1,10 +1,21 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
 parameters:
-  level: 6
-  paths:
-    - lib
-    - test
-    - spec
-  excludePaths:
-    - lib/Model/*
-    - lib/Api/*
-    - lib/ObjectSerializer.php
+    level: 6
+
+    paths:
+        - app
+        - config
+        - database
+        - routes
+        - tests
+
+    excludePaths:
+        - bootstrap/cache
+        - storage
+        - vendor
+        - build
+        - server.php
+        - _ide_helper.php
+        - _ide_helper_models.php

@@ -2,35 +2,33 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          bootstrap="./vendor/autoload.php"
          colors="true"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
          cacheResult="false">
-  <listeners>
-    <listener class="Zitadel\Client\Spec\Setup" file="spec/Setup.php"/>
-  </listeners>
-  <coverage processUncoveredFiles="true">
+
+  <source>
     <include>
-      <directory suffix=".php">./lib</directory>
+      <directory suffix=".php">./app</directory>
     </include>
-    <exclude>
-      <directory>lib/Api</directory>
-      <directory>lib/Model</directory>
-      <directory suffix=".php">./vendor</directory>
-      <directory suffix=".php">./test</directory>
-      <directory suffix=".php">./spec</directory>
-    </exclude>
-  </coverage>
+  </source>
+
   <testsuites>
-    <testsuite name="tests">
-      <directory suffix=".php">./test</directory>
-      <directory suffix=".php">./spec</directory>
+    <testsuite name="Feature">
+      <directory suffix="Test.php">./tests/Feature</directory>
     </testsuite>
-    <testsuite name="specs">
-      <directory suffix="Spec.php">./spec</directory>
+    <testsuite name="Unit">
+      <directory suffix="Test.php">./tests/Unit</directory>
     </testsuite>
   </testsuites>
+
   <php>
-    <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED &amp; ~E_USER_DEPRECATED"/>
+    <ini name="error_reporting" value="E_ALL"/>
     <ini name="memory_limit" value="1024M"/>
-    <env name="APP_ENV" value="test"/>
+
+    <env name="APP_ENV" value="testing"/>
+    <env name="BCRYPT_ROUNDS" value="4"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <env name="MAIL_MAILER" value="array"/>
   </php>
 </phpunit>

@@ -1,22 +1,36 @@
-# ref: https://github.com/github/gitignore/blob/master/Composer.gitignore
+.DS_Store
+.idea
+.vscode
 
-composer.phar
-/vendor/
-
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
-
-# php-cs-fixer cache
-.php_cs.cache
-.php-cs-fixer.cache
-
-# PHPUnit cache
-.phpunit.result.cache
+/vendor
+/node_modules
+/build
 
 .env
+.env.backup
+.env.phpunit
 
-devbox.json
-devbox.lock
-.devbox
+composer.phar
 package.xml
+
+/public/build
+/public/hot
+/public/storage
+
+/storage/*.key
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+
+.php-cs-fixer.cache
+.phpunit.result.cache
+phpstan.result.cache
+
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+
+.devbox
+devbox.lock

@@ -1,241 +1,119 @@
-# PHP SDK for Zitadel
+# Laravel with ZITADEL
 
-This is the Zitadel PHP SDK, designed to provide a convenient and idiomatic
-way to interact with the Zitadel APIs in PHP. The SDK provides a seamless
-wrapping of the Zitadel API, making it easy to authenticate service users and
-perform API operations.
+Laravel is a web application framework with expressive, elegant syntax. This guide demonstrates how to use Laravel Socialite with a custom ZITADEL provider to implement secure login with ZITADEL.
 
-The SDK enables efficient integration with the Zitadel API, allowing you to
-manage resources and execute actions. However, it's important to note that
-this SDK is tailored for service users and is not intended for user
-authentication scenarios. It does not support authentication mechanisms
-like OAuth2, OIDC, or SAML for client applications, including web, mobile,
-or other environments. For these types of user authentication, you should
-use other libraries that are designed for the specific platform and
-authentication method.
+We'll be using the **OpenID Connect (OIDC)** protocol with the **Authorization Code Flow + PKCE**. This is the industry-best practice for security, ensuring that the login process is safe from start to finish.
 
-**Disclaimer**: This SDK is not suitable for implementing user authentication.
-It does not handle authentication for client applications using OAuth2, OIDC,
-or SAML and should not be used for scenarios requiring such functionality.
-For those use cases, consider using other solutions that are designed for
-user authentication across various platforms like web, mobile, or other
-client environments.
+## Example Application
 
-> [!IMPORTANT]
-> Please be aware that this SDK is currently in an incubating stage. We are releasing it to the community to gather
-> feedback and learn how it is being used. While you are welcome to use it, please note that the API and functionality may
-> evolve based on community input. We encourage you to try it out and share your experiences, but advise caution when
-> considering it for production environments as future updates may introduce changes.
+The example repository includes a complete Laravel application, ready to run, that demonstrates how to integrate ZITADEL for user authentication.
 
-## Getting Started
+This example application showcases a typical web app authentication pattern: users start on a public landing page, click a login button to authenticate with ZITADEL, and are then redirected to a protected profile page displaying their user information. The app also includes secure logout functionality that clears the session and redirects users back to ZITADEL's logout endpoint.
 
-### Sign up for Zitadel
+### Prerequisites
 
-To use this SDK, you need a Zitadel account. Sign up at the official
-Zitadel website and obtain the necessary credentials to access the API.
+Before you begin, ensure you have the following:
 
-### Minimum Requirements
+#### System Requirements
 
-Ensure you have PHP 8.0 or higher installed. You also need Composer to
-install dependencies.
+- PHP 8.3 or later
+- Composer package manager
 
-## Using the SDK
+#### Account Setup
 
-### Installation
+You'll need a ZITADEL account and application configured. Follow the ZITADEL documentation on creating applications to set up your account and create a Web application with Authorization Code + PKCE flow.
 
-Install the SDK by running one of the following commands:
+> **Important:** Configure the following URLs in your ZITADEL application settings:
+>
+> - **Redirect URIs:** Add `http://localhost:8000/auth/callback` (for development)
+> - **Post Logout Redirect URIs:** Add `http://localhost:8000/auth/logout/callback` (for development)
+>
+> These URLs must exactly match what your Laravel application uses. For production, add your production URLs.
+
+### Configuration
+
+To run the application, you first need to copy the `.env.example` file to a new file named `.env` and fill in your ZITADEL application credentials.
 
 ```bash
-composer require zitadel/client
+cp .env.example .env
 ```
 
-## Authentication Methods
+Then update the following values in `.env`:
 
-Your SDK offers three ways to authenticate with Zitadel. Each method has its
-own benefits—choose the one that fits your situation best.
+```dotenv
+# Port number where your Laravel server will listen
+PORT=8000
 
-#### 1. Private Key JWT Authentication
+# Session timeout in seconds
+SESSION_DURATION=3600
 
-**What is it?**
-You use a JSON Web Token (JWT) that you sign with a private key stored in a
-JSON file. This process creates a secure token.
+# Secret key used to sign session cookies
+SESSION_SECRET="your-very-secret-and-strong-session-key"
 
-**When should you use it?**
+# Your ZITADEL instance domain URL
+ZITADEL_DOMAIN="https://your-zitadel-domain"
 
-- **Best for production:** It offers strong security.
-- **Advanced control:** You can adjust token settings like expiration.
+# Application Client ID from ZITADEL
+ZITADEL_CLIENT_ID="your-client-id"
 
-**How do you use it?**
+# Client secret (can be randomly generated for PKCE)
+ZITADEL_CLIENT_SECRET="your-randomly-generated-client-secret"
 
-1. Save your private key in a JSON file.
-2. Use the provided method to load this key and create a JWT-based
-   authenticator.
+# OAuth callback URL
+ZITADEL_CALLBACK_URL="http://localhost:8000/auth/callback"
 
-**Example:**
-
-```php
-use \Zitadel\Client\Zitadel;
-
-$zitadel = Zitadel::withPrivateKey("https://example.us1.zitadel.cloud", "path/to/jwt-key.json");
-
-try {
-    $response = $zitadel->users->addHumanUser((new UserServiceAddHumanUserRequest())
-        ->setUsername('john.doe')
-        ->setProfile(
-            (new UserServiceSetHumanProfile())
-                ->setGivenName('John')
-                ->setFamilyName('Doe')
-        )
-        ->setEmail(
-            (new UserServiceSetHumanEmail())
-                ->setEmail('john@doe.com')
-        ));
-    echo "User created: " . print_r($response, true);
-} catch (ApiException $e) {
-    echo "Error: " . $e->getMessage();
+# Post logout redirect URL
+ZITADEL_POST_LOGOUT_URL="http://localhost:8000/auth/logout/callback"
 ```
 
-#### 2. Client Credentials Grant
+### Installation and Running
 
-**What is it?**
-This method uses a client ID and client secret to get a secure access token,
-which is then used to authenticate.
+Follow these steps to get the application running:
 
-**When should you use it?**
+```bash
+# 1. Install dependencies
+composer install
 
-- **Simple and straightforward:** Good for server-to-server communication.
-- **Trusted environments:** Use it when both servers are owned or trusted.
+# 2. Generate application key
+php artisan key:generate
 
-**How do you use it?**
+# 3. Create storage directories
+mkdir -p storage/framework/{sessions,views,cache}
+mkdir -p storage/logs
 
-1. Provide your client ID and client secret.
-2. Build the authenticator
+# 4. Set permissions
+chmod -R 775 storage bootstrap/cache
 
-**Example:**
-
-```php
-use Zitadel\Client\Zitadel;
-use Zitadel\Client\Model\UserServiceAddHumanUserRequest;
-use \Zitadel\Client\Model\UserServiceAddHumanUserRequest;
-use \Zitadel\Client\Model\UserServiceSetHumanProfile;
-use \Zitadel\Client\Model\UserServiceSetHumanEmail;
-
-$zitadel = Zitadel::withClientCredentials("https://example.us1.zitadel.cloud", "id", "secret");
-
-try {
-    $response = $zitadel->users->addHumanUser((new UserServiceAddHumanUserRequest())
-        ->setUsername('john.doe')
-        ->setProfile(
-            (new UserServiceSetHumanProfile())
-                ->setGivenName('John')
-                ->setFamilyName('Doe')
-        )
-        ->setEmail(
-            (new UserServiceSetHumanEmail())
-                ->setEmail('john@doe.com')
-        ));
-    echo "User created: " . print_r($response, true);
-} catch (ApiException $e) {
-    echo "Error: " . $e->getMessage();
-}
+# 5. Start the development server
+php artisan serve --port=8000
 ```
 
-#### 3. Personal Access Tokens (PATs)
+The application will now be running at `http://localhost:8000`.
 
-**What is it?**
-A Personal Access Token (PAT) is a pre-generated token that you can use to
-authenticate without exchanging credentials every time.
+## Key Features
 
-**When should you use it?**
+### PKCE Authentication Flow
 
-- **Easy to use:** Great for development or testing scenarios.
-- **Quick setup:** No need for dynamic token generation.
+The application implements the secure Authorization Code Flow with PKCE (Proof Key for Code Exchange), which is the recommended approach for modern web applications.
 
-**How do you use it?**
+### Session Management
 
-1. Obtain a valid personal access token from your account.
-2. Create the authenticator with: `PersonalAccessTokenAuthenticator`
+Built-in session management with Laravel handles user authentication state across your application, with automatic token refresh and secure session storage.
 
-**Example:**
+### Route Protection
 
-```php
-use \Zitadel\Client\Zitadel;
-use Zitadel\Client\Zitadel;
-use Zitadel\Client\Model\UserServiceAddHumanUserRequest;
-use \Zitadel\Client\Model\UserServiceAddHumanUserRequest;
-use \Zitadel\Client\Model\UserServiceSetHumanProfile;
-use \Zitadel\Client\Model\UserServiceSetHumanEmail;
+Protected routes automatically redirect unauthenticated users to the login flow via the `RequireAuth` middleware, ensuring sensitive areas of your application remain secure.
 
-$zitadel = Zitadel::withAccessToken("https://example.us1.zitadel.cloud", "token");
+### Logout Flow
 
-try {
-    $response = $zitadel->users->addHumanUser(
-        (new UserServiceAddHumanUserRequest())
-            ->setUsername('john.doe')
-            ->setProfile(
-                (new UserServiceSetHumanProfile())
-                    ->setGivenName('John')
-                    ->setFamilyName('Doe')
-            )
-            ->setEmail(
-                (new UserServiceSetHumanEmail())
-                    ->setEmail('john@doe.com')
-            )
-    );
-    echo "User created: " . print_r($response, true);
-} catch (ApiException $e) {
-    echo "Error: " . $e->getMessage();
-}
-```
+Complete logout implementation that properly terminates both the local session and the ZITADEL session, with proper redirect handling and CSRF protection.
 
----
+### Automatic Token Refresh
 
-Choose the authentication method that best suits your needs based on your
-environment and security requirements. For more details, please refer to the
-[Zitadel documentation on authenticating service users](https://zitadel.com/docs/guides/integrate/service-users/authenticate-service-users).
+The middleware automatically detects expired access tokens and refreshes them using the refresh token, maintaining seamless user sessions without re-authentication.
 
-## Design and Dependencies
+## Resources
 
-This SDK is designed to be lean and efficient, focusing on providing a
-streamlined way to interact with the Zitadel API. It relies on Guzzle's
-PSR-7 compliant HTTP transport for making requests, which ensures that
-the SDK integrates well with other libraries and provides flexibility
-in terms of request handling and error management.
-
-## Versioning
-
-A key aspect of our strategy is that the SDK's major version is synchronized with the ZITADEL core project's major
-version to ensure compatibility. For a detailed explanation of this policy and our release schedule, please see
-our [Versioning Guide](VERSIONING.md).
-
-## Contributing
-
-This repository is autogenerated. We do not accept direct contributions.
-Instead, please open an issue for any bugs or feature requests.
-
-## Reporting Issues
-
-If you encounter any issues or have suggestions for improvements, please
-open an issue in the [issue tracker](https://github.com/zitadel/client-php/issues).
-When reporting an issue, please provide the following information to help
-us address it more effectively:
-
-- A detailed description of the problem or feature request
-- Steps to reproduce the issue (if applicable)
-- Any relevant error messages or logs
-- Environment details (e.g., OS version, relevant configurations)
-
-## Support
-
-If you need help setting up or configuring the SDK (or anything
-Zitadel), please head over to the [Zitadel Community on Discord](https://zitadel.com/chat).
-
-There are many helpful people in our Discord community who are ready to
-assist you.
-
-Cloud and enterprise customers can additionally reach us privately via our
-[support communication channels](https://zitadel.com/docs/legal/service-description/support-services).
-
-## License
-
-This SDK is distributed under the Apache 2.0 License.
+- **Laravel Documentation:** https://laravel.com/docs
+- **Laravel Socialite:** https://laravel.com/docs/socialite
+- **ZITADEL Documentation:** https://zitadel.com/docs
