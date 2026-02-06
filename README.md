@@ -95,7 +95,7 @@ composer install
 php artisan key:generate
 
 # 4. Start the development server
-composer run dev
+make start
 ```
 
 The application will now be running at `http://localhost:3000`.
