@@ -1,0 +1,27 @@
+{
+  "name": "ZITADEL Example Laravel Auth",
+  "image": "mcr.microsoft.com/devcontainers/php:8.3-bookworm",
+  "containerEnv": {
+    "XDEBUG_MODE": "coverage"
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Application",
+      "onAutoForward": "notify"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "silent"
+  },
+  "onCreateCommand": "cp -n .env.example .env",
+  "updateContentCommand": "composer install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "xdebug.php-debug"
+      ]
+    }
+  }
+}
