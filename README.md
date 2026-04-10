@@ -53,7 +53,7 @@ SERVER_URL="http://localhost:3000"
 
 # Port number where your Laravel server will listen for incoming HTTP requests.
 # Change this if port 3000 is already in use on your system.
-SERVER_PORT=3000
+PORT=3000
 
 # Your ZITADEL instance domain URL. Found in your ZITADEL console under
 # instance settings. Include the full https:// URL.
