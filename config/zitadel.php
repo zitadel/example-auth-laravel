@@ -6,6 +6,7 @@ return [
     'domain' => env('ZITADEL_DOMAIN'),
     'client_id' => env('ZITADEL_CLIENT_ID'),
     'client_secret' => env('ZITADEL_CLIENT_SECRET'),
+    'post_login_url' => env('ZITADEL_POST_LOGIN_URL', '/profile'),
     'post_logout_url' => env('ZITADEL_POST_LOGOUT_URL'),
 
     'scopes' => [

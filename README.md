@@ -73,6 +73,10 @@ ZITADEL_CLIENT_ID="your-client-id"
 # php -r "echo bin2hex(random_bytes(32));"
 ZITADEL_CLIENT_SECRET="your-randomly-generated-client-secret"
 
+# Optional. URL where users are redirected after successful login.
+# Defaults to "/profile" if not specified.
+ZITADEL_POST_LOGIN_URL="/profile"
+
 # URL where users are redirected after logout. This should match a Post Logout
 # Redirect URI configured in your ZITADEL application settings.
 ZITADEL_POST_LOGOUT_URL="http://localhost:3000/auth/logout/callback"

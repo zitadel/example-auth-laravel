@@ -28,21 +28,15 @@ class AuthController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @param AuthService $authService
-     * @param MessageService $messageService
      */
     public function __construct(
-        private readonly AuthService    $authService,
+        private readonly AuthService $authService,
         private readonly MessageService $messageService
     ) {
     }
 
     /**
      * Display the sign-in page.
-     *
-     * @param Request $request
-     * @return View
      */
     public function showSignin(Request $request): View
     {
@@ -64,9 +58,6 @@ class AuthController extends Controller
 
     /**
      * Redirect to the OAuth provider.
-     *
-     * @param string $provider
-     * @return SymfonyRedirectResponse
      */
     public function redirectToProvider(string $provider): SymfonyRedirectResponse
     {
@@ -76,8 +67,6 @@ class AuthController extends Controller
     /**
      * Handle the OAuth callback.
      *
-     * @param string $provider
-     * @return RedirectResponse
      * @noinspection PhpUndefinedFieldInspection
      */
     public function handleProviderCallback(string $provider): RedirectResponse
@@ -89,8 +78,9 @@ class AuthController extends Controller
             /** @phpstan-ignore-next-line */
             $tokenResponse = $socialiteUser->accessTokenResponseBody;
 
-            if (!isset($tokenResponse['id_token'])) {
+            if (! isset($tokenResponse['id_token'])) {
                 Log::critical('ZITADEL did not return an id_token. Check scopes.');
+
                 return redirect()->route('auth.error', ['error' => 'missing_id_token']);
             }
 
@@ -100,13 +90,13 @@ class AuthController extends Controller
                 'refresh_token' => $socialiteUser->refreshToken,
                 'id_token' => $tokenResponse['id_token'],
                 'expires_at' => isset($tokenResponse['expires_in'])
-                    ? time() + (int)$tokenResponse['expires_in']
+                    ? time() + (int) $tokenResponse['expires_in']
                     : time() + 3600,
             ]);
 
             session()->save();
 
-            return redirect()->route('profile');
+            return redirect(config('zitadel.post_login_url') ?: '/profile');
         } catch (ClientException $e) {
             Log::error('ZITADEL provider rejected request', [
                 'status' => $e->getResponse()->getStatusCode(),
@@ -126,9 +116,6 @@ class AuthController extends Controller
 
     /**
      * Display the authentication error page.
-     *
-     * @param Request $request
-     * @return View
      */
     public function showError(Request $request): View
     {
@@ -141,14 +128,13 @@ class AuthController extends Controller
     /**
      * Initiate a logout process.
      *
-     * @return RedirectResponse
      * @throws RandomException
      */
     public function logout(): RedirectResponse
     {
         $idToken = session('id_token');
 
-        if (!$idToken) {
+        if (! $idToken) {
             return redirect()->route('home')->with(
                 'error',
                 'No valid session or ID token found'
@@ -164,9 +150,6 @@ class AuthController extends Controller
 
     /**
      * Handle logout callback from ZITADEL.
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function logoutCallback(Request $request): RedirectResponse
     {
@@ -175,17 +158,17 @@ class AuthController extends Controller
 
         if ($state && $logoutState && $state === $logoutState) {
             session()->flush();
+
             return redirect()->route('auth.logout.success');
         }
 
         $reason = urlencode('Invalid or missing state parameter.');
+
         return redirect()->route('auth.logout.error', ['reason' => $reason]);
     }
 
     /**
      * Display the logout success page.
-     *
-     * @return View
      */
     public function logoutSuccess(): View
     {
@@ -194,9 +177,6 @@ class AuthController extends Controller
 
     /**
      * Display logout error page.
-     *
-     * @param Request $request
-     * @return View
      */
     public function logoutError(Request $request): View
     {
@@ -207,14 +187,12 @@ class AuthController extends Controller
 
     /**
      * Fetch user info from ZITADEL.
-     *
-     * @return JsonResponse
      */
     public function userInfo(): JsonResponse
     {
         $accessToken = session('access_token');
 
-        if (!$accessToken) {
+        if (! $accessToken) {
             return response()->json(
                 ['error' => 'No access token available'],
                 401
@@ -223,11 +201,11 @@ class AuthController extends Controller
 
         try {
             $response = Http::withToken($accessToken)
-                ->get(config('zitadel.domain') . '/oidc/v1/userinfo');
+                ->get(config('zitadel.domain').'/oidc/v1/userinfo');
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return response()->json(
-                    ['error' => 'UserInfo API error: ' . $response->status()],
+                    ['error' => 'UserInfo API error: '.$response->status()],
                     $response->status()
                 );
             }
