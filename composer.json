@@ -1,5 +1,5 @@
 {
-  "name": "zitadel/laravel-pkce-example",
+  "name": "zitadel/example-laravel-auth",
   "type": "project",
   "description": "Laravel application demonstrating ZITADEL authentication with PKCE using Socialite",
   "keywords": [
