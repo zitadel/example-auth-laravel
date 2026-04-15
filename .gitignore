@@ -26,6 +26,7 @@ package.xml
 
 .php-cs-fixer.cache
 .phpunit.result.cache
+/.phpunit.cache/
 phpstan.result.cache
 
 _ide_helper.php
