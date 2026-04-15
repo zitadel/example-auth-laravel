@@ -12,7 +12,7 @@
     "socialite",
     "sso"
   ],
-  "homepage": "https://github.com/zitadel/example-laravel-auth",
+  "homepage": "https://github.com/zitadel/example-auth-laravel",
   "license": "Apache-2.0",
   "authors": [
     {
