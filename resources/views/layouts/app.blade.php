@@ -7,7 +7,7 @@
     <title>Zitadel PKCE Demo</title>
     <!--suppress JSUnresolvedLibraryURL -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="icon" href="{{ asset('static/app-logo.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 @yield('content')
