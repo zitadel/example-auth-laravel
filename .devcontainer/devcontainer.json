@@ -1,10 +1,12 @@
 {
-  "name": "ZITADEL Example Laravel Auth",
+  "name": "Zitadel Example Laravel Auth",
   "image": "mcr.microsoft.com/devcontainers/php:8.3-bookworm",
   "containerEnv": {
     "XDEBUG_MODE": "coverage"
   },
-  "forwardPorts": [3000],
+  "forwardPorts": [
+    3000
+  ],
   "portsAttributes": {
     "3000": {
       "label": "Application",
