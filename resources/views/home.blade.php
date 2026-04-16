@@ -157,7 +157,7 @@
         loginForm.onsubmit = async (e) => {
             e.preventDefault();
             loginButton.disabled = true;
-            buttonText.textContent = 'Loading...';
+            buttonText.textContent = 'Loading…';
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 const input = Object.assign(

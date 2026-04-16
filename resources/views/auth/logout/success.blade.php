@@ -14,7 +14,7 @@
                 Logout successful
             </h1>
             <p class="mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8" id="countdown">
-                Redirecting in 10 seconds...
+                Redirecting in 10 seconds…
             </p>
             <div class="mt-10 flex items-center justify-center gap-x-6">
                 <a href="{{ route('home') }}"
@@ -30,7 +30,7 @@
         const countdownElement = document.getElementById('countdown');
         const timer = setInterval(() => {
             countdown--;
-            countdownElement.textContent = countdown + " seconds...";
+            countdownElement.textContent = countdown + " seconds…";
             if (countdown <= 0) {
                 clearInterval(timer);
                 window.location.href = '{{ route('home') }}';
