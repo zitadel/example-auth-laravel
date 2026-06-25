@@ -23,7 +23,7 @@
   "require": {
     "php": "~8.3.0",
     "guzzlehttp/guzzle": "^7.9",
-    "laravel/framework": "^12.0",
+    "laravel/framework": "^13.17",
     "laravel/socialite": "^5.0",
     "vlucas/phpdotenv": "^5.6"
   },
