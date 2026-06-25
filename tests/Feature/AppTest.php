@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Application;
 use Tests\TestCase;
 
 /**
@@ -14,7 +15,7 @@ class AppTest extends TestCase
      */
     public function test_app_starts(): void
     {
-        $this->assertNotNull($this->app);
+        $this->assertInstanceOf(Application::class, $this->app);
     }
 
     /**
